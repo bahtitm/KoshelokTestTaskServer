@@ -1,5 +1,4 @@
-﻿using DAL.Models.Users;
-using DAL.Services;
+﻿using Application.Features.Users;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KoshelokTestTaskServer.Controllers
@@ -30,14 +29,14 @@ namespace KoshelokTestTaskServer.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(CreateRequest model)
+        public async Task<IActionResult> Create(CreateUserRequest model)
         {
             await _userService.Create(model);
             return Ok(new { message = "User created" });
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, UpdateRequest model)
+        public async Task<IActionResult> Update(int id, UpdateUserRequest model)
         {
             await _userService.Update(id, model);
             return Ok(new { message = "User updated" });

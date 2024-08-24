@@ -1,8 +1,9 @@
-using DAL.Helpers;
-using DAL.Repositories;
-using DAL.Services;
+using Application.Features.Messages;
+using Application.Features.Users;
+using Application.Interfaces;
+using Domain.Entities;
+using Infrastructure;
 using KoshelokTestTaskServer.Middlewares;
-using System.Runtime;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddCors();
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers().AddJsonOptions(x =>
@@ -23,13 +24,15 @@ builder.Services.AddControllers().AddJsonOptions(x =>
 });
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-// configure strongly typed settings object
+
 builder.Services.Configure<DbSettings>(builder.Configuration.GetSection("DbSettings"));
 
-// configure DI for application services
+
 builder.Services.AddSingleton<DataContext>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IRepository<User>, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IRepository<Message>, MessageRepository>();
+builder.Services.AddScoped<IMessageService, MessageService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

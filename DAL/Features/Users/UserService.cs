@@ -1,33 +1,18 @@
-﻿using AutoMapper;
-using DAL.Entities;
-using DAL.Helpers;
-using DAL.Models.Users;
-using DAL.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Application.Helpers;
+using Application.Interfaces;
+using AutoMapper;
+using Domain.Entities;
 
 
-namespace DAL.Services
+namespace Application.Features.Users
 {
-    public interface IUserService
-    {
-        Task<IEnumerable<User>> GetAll();
-        Task<User> GetById(int id);
-        Task Create(CreateRequest model);
-        Task Update(int id, UpdateRequest model);
-        Task Delete(int id);
-    }
-
     public class UserService : IUserService
     {
-        private IUserRepository _userRepository;
+        private IRepository<User> _userRepository;
         private readonly IMapper _mapper;
 
         public UserService(
-            IUserRepository userRepository,
+            IRepository<User> userRepository,
             IMapper mapper)
         {
             _userRepository = userRepository;
@@ -49,10 +34,10 @@ namespace DAL.Services
             return user;
         }
 
-        public async Task Create(CreateRequest model)
+        public async Task Create(CreateUserRequest model)
         {
             // validate
-            if (await _userRepository.GetByEmail(model.Email!) != null)
+            if (await _userRepository.Find(model.Email!) != null)
                 throw new AppException("User with the email '" + model.Email + "' already exists");
 
             // map model to new user object
@@ -65,7 +50,7 @@ namespace DAL.Services
             await _userRepository.Create(user);
         }
 
-        public async Task Update(int id, UpdateRequest model)
+        public async Task Update(int id, UpdateUserRequest model)
         {
             var user = await _userRepository.GetById(id);
 
@@ -74,7 +59,7 @@ namespace DAL.Services
 
             // validate
             var emailChanged = !string.IsNullOrEmpty(model.Email) && user.Email != model.Email;
-            if (emailChanged && await _userRepository.GetByEmail(model.Email!) != null)
+            if (emailChanged && await _userRepository.Find(model.Email!) != null)
                 throw new AppException("User with the email '" + model.Email + "' already exists");
 
             // hash password if it was entered

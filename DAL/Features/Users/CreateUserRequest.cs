@@ -1,9 +1,9 @@
-﻿using DAL.Entities;
+﻿using Domain.Entities;
 using System.ComponentModel.DataAnnotations;
 
-namespace DAL.Models.Users
+namespace Application.Features.Users
 {
-    public class CreateRequest
+    public class CreateUserRequest
     {
         [Required]
         public string? Title { get; set; }

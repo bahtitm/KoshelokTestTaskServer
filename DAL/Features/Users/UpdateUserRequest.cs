@@ -1,9 +1,9 @@
-﻿using DAL.Entities;
+﻿using Domain.Entities;
 using System.ComponentModel.DataAnnotations;
 
-namespace DAL.Models.Users
+namespace Application.Features.Users
 {
-    public class UpdateRequest
+    public class UpdateUserRequest
     {
         public string? Title { get; set; }
         public string? FirstName { get; set; }

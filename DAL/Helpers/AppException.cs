@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace DAL.Helpers
+namespace Application.Helpers
 {
     public class AppException : Exception
     {

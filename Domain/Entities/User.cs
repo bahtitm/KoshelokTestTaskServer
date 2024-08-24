@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace DAL.Entities
+namespace Domain.Entities
 {
     public class User
     {

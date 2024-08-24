@@ -1,20 +1,10 @@
-﻿using DAL.Entities;
-using DAL.Helpers;
+﻿using Application.Interfaces;
+using Domain.Entities;
 using Npgsql;
 
-namespace DAL.Repositories
+namespace Infrastructure
 {
-    public interface IUserRepository
-    {
-        Task<IEnumerable<User>> GetAll();
-        Task<User> GetById(int id);
-        Task<User> GetByEmail(string email);
-        Task Create(User user);
-        Task Update(User user);
-        Task Delete(int id);
-    }
-
-    public class UserRepository : IUserRepository
+    public class UserRepository : IRepository<User>
     {
         private DataContext _context;
 
@@ -28,7 +18,7 @@ namespace DAL.Repositories
             using var connection = await _context.CreateConnectionAsync();
             var sql = """
             SELECT * FROM Users
-        """;
+            """;
             var command = new NpgsqlCommand(sql, connection);
             var users = new List<User>();
 
@@ -59,7 +49,7 @@ namespace DAL.Repositories
             var sql = """
             SELECT * FROM Users 
             WHERE Id = @id
-        """;
+            """;
             var command = new NpgsqlCommand(sql, connection);
             command.Parameters.AddWithValue("id", id);
 
@@ -82,19 +72,19 @@ namespace DAL.Repositories
 
         }
 
-        public async Task<User> GetByEmail(string email)
+        public async Task<User> Find(params object[] email)
         {
 
             using var connection = await _context.CreateConnectionAsync();
             var sql = """
             SELECT * FROM Users 
             WHERE Email = @email
-        """;
+            """;
             using (var cmd = new NpgsqlCommand())
             {
                 cmd.Connection = connection;
                 cmd.CommandText = sql;
-                cmd.Parameters.AddWithValue("email", email);
+                cmd.Parameters.AddWithValue("email", email[0]);
 
                 using (var reader = cmd.ExecuteReader())
                 {
@@ -103,11 +93,11 @@ namespace DAL.Repositories
                         return new User
                         {
                             Id = reader.GetInt32(0),
-                            Title= reader.GetString(1),
-                            FirstName= reader.GetString(2),
-                            LastName= reader.GetString(3),
+                            Title = reader.GetString(1),
+                            FirstName = reader.GetString(2),
+                            LastName = reader.GetString(3),
                             Email = reader.GetString(4),
-                            Role= (Role)reader.GetInt32(5),
+                            Role = (Role)reader.GetInt32(5),
                             PasswordHash = reader.GetString(6),
 
                         };
@@ -118,7 +108,7 @@ namespace DAL.Repositories
                 return null;
             }
 
-            
+
         }
         public async Task Create(User user)
         {
@@ -126,7 +116,7 @@ namespace DAL.Repositories
             var sql = """
             INSERT INTO Users (Title, FirstName, LastName, Email, Role, PasswordHash)
             VALUES (@Title, @FirstName, @LastName, @Email, @Role, @PasswordHash)
-        """;
+            """;
 
             using (var cmd = new NpgsqlCommand())
             {
@@ -138,7 +128,7 @@ namespace DAL.Repositories
                 cmd.Parameters.AddWithValue("Email", user.Email ?? string.Empty);
                 cmd.Parameters.AddWithValue("Role", (int)user.Role);
                 cmd.Parameters.AddWithValue("PasswordHash", user.PasswordHash ?? string.Empty);
-                
+
 
                 cmd.ExecuteNonQuery();
             }
@@ -161,7 +151,7 @@ namespace DAL.Repositories
                 Role = @Role, 
                 PasswordHash = @PasswordHash
             WHERE Id = @Id
-        """;
+          """;
 
             using (var cmd = new NpgsqlCommand())
             {
@@ -177,7 +167,7 @@ namespace DAL.Repositories
                 cmd.Parameters.AddWithValue("Id", user.Id);
 
 
-                
+
 
                 cmd.ExecuteNonQuery();
             }
@@ -191,7 +181,7 @@ namespace DAL.Repositories
             var sql = """
             DELETE FROM Users 
             WHERE Id = @id
-        """;
+          """;
             using (var cmd = new NpgsqlCommand())
             {
                 cmd.Connection = connection;
@@ -203,5 +193,7 @@ namespace DAL.Repositories
 
 
         }
+
+
     }
 }

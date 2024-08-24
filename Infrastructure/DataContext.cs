@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using Npgsql;
 
-namespace DAL.Helpers
+namespace Infrastructure
 {
     public class DataContext
     {
@@ -61,6 +61,26 @@ namespace DAL.Helpers
         private async Task _initTables()
         {
             await _initUsers();
+            await _initMassage();
+        }
+        private async Task _initMassage()
+        {
+            var conn = await npgsqlDataSource.OpenConnectionAsync();
+            var sql = """
+                CREATE TABLE IF NOT EXISTS Message (
+                    Id SERIAL PRIMARY KEY,
+                    Text VARCHAR,
+                    Date DATE
+                   
+                );
+            """;
+
+
+            using (var cmd = new NpgsqlCommand(sql, conn))
+            {
+                cmd.ExecuteNonQuery();
+
+            }
         }
         async Task _initUsers()
         {

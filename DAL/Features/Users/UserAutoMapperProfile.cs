@@ -1,24 +1,17 @@
 ﻿using AutoMapper;
-using DAL.Entities;
-using DAL.Models.Users;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using Domain.Entities;
 
-namespace DAL.Helpers
+namespace Application.Features.Users
 {
-    internal class AutoMapperProfile : Profile
+    internal class UserAutoMapperProfile : Profile
     {
-        public AutoMapperProfile()
+        public UserAutoMapperProfile()
         {
-            // CreateRequest -> User
-            CreateMap<CreateRequest, User>();
+            
+            CreateMap<CreateUserRequest, User>();
 
-            // UpdateRequest -> User
-            CreateMap<UpdateRequest, User>()
+            
+            CreateMap<UpdateUserRequest, User>()
                 .ForAllMembers(x => x.Condition(
                     (src, dest, prop) =>
                     {
