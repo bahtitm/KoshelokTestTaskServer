@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Domain.Entities;
-using System.Collections;
 
 namespace Application.Features.Messages
 {
@@ -39,9 +38,9 @@ namespace Application.Features.Messages
                       }
 
 
-                  } )
+                  })
                   .ForMember(p => p.Text, p => p.Ignore())
-            
+
             ;
 
             CreateMap<Message, GetedMessage>()
@@ -50,15 +49,15 @@ namespace Application.Features.Messages
                   {
                       string result = System.Text.Encoding.UTF8.GetString(sr.Text);
 
-                         
-                          ds.Text = result;
 
-                     
+                      ds.Text = result;
+
+
 
 
                   })
                   .ForMember(p => p.Text, p => p.Ignore())
-            
+
             ;
 
         }

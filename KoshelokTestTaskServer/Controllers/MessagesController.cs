@@ -1,5 +1,7 @@
 ﻿using Application.Features.Messages;
 using Microsoft.AspNetCore.Mvc;
+using System.Text;
+using System.Text.Json;
 
 namespace KoshelokTestTaskServer.Controllers
 {
@@ -27,11 +29,27 @@ namespace KoshelokTestTaskServer.Controllers
             var message = await _messageService.GetById(id);
             return Ok(message);
         }
-
-        [HttpPost]
-        public async Task<IActionResult> Create()
+        [HttpPost("FromModel")]
+        public async Task<IActionResult> Create(int number, string text)
         {
             CreateMessageRequest model = new();
+            model.Number = number;
+            model.Text = Encoding.UTF8.GetBytes(text);
+            await _messageService.Create(model);
+            return Ok(new { message = "User created" });
+        }
+        [HttpPost]
+        public async Task<IActionResult> Create(int number)
+        {
+            CreateMessageRequest model = new();
+            WebSocketMenager webSocketMenager = new WebSocketMenager();
+            string text;
+            byte[] data;
+            var remoteIpAddress = HttpContext.Connection.RemoteIpAddress;
+
+            // If you need it as a string
+            var remoteIpAddressString = remoteIpAddress?.ToString();
+
             try
             {
 
@@ -41,13 +59,22 @@ namespace KoshelokTestTaskServer.Controllers
                     using (var memoryStream = new MemoryStream())
                     {
                         inputStream.CopyTo(memoryStream);
-                        model.Text = memoryStream.ToArray();
+                        data = memoryStream.ToArray();
                     }
-
                 }
-
+                model.Text = data;
+                model.Number=number;
+                model.Date = DateTime.Now;
+                text = Encoding.UTF8.GetString(data);
                 await _messageService.Create(model);
-                return Ok(new { message = "User created" });
+                Uri clientUri = new Uri("wss://localhost:7075/ws");
+                await webSocketMenager.ConnectAsync(clientUri);
+
+                var modelForSendWebsocket = new { Text = text, Number = number, Date = model.Date };
+
+                var json = JsonSerializer.Serialize(modelForSendWebsocket);
+                await webSocketMenager.SendMessageAsync(json);
+                return NoContent();
 
 
             }
@@ -57,7 +84,9 @@ namespace KoshelokTestTaskServer.Controllers
                 return StatusCode(500, $"Error processing stream: {ex.Message}");
             }
 
-        }      
+        }
+
+
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
@@ -65,5 +94,6 @@ namespace KoshelokTestTaskServer.Controllers
             await _messageService.Delete(id);
             return Ok(new { message = "User deleted" });
         }
+
     }
 }

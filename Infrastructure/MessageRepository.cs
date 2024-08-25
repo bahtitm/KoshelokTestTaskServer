@@ -30,8 +30,10 @@ namespace Infrastructure
                     users.Add(new Message
                     {
                         Id = reader.GetInt32(0),
+                        Number = reader.GetInt32(1),
                         Text = data,
-                        
+                        Date= reader.GetDateTime(3),
+
                     });
                 }
             }
@@ -88,9 +90,10 @@ namespace Infrastructure
                         return new Message
                         {
                             Id = reader.GetInt32(0),
-
+                            Number = reader.GetInt32(1),
                             Text = data,
-                          
+                            Date = reader.GetDateTime(3),
+
 
                         };
                     }
@@ -106,19 +109,17 @@ namespace Infrastructure
         {
             using var connection = await _context.CreateConnectionAsync();
             var sql = """
-            INSERT INTO Message (Text, Date)
-            VALUES (@Text, @Date)
+            INSERT INTO Message (Number,Text,Date)
+            VALUES (@Number,@Text, @Date)
             """;
 
             using (var cmd = new NpgsqlCommand())
             {
                 cmd.Connection = connection;
                 cmd.CommandText = sql;
+                cmd.Parameters.AddWithValue("Number", message.Number);
                 cmd.Parameters.AddWithValue("Text", message.Text);
                 cmd.Parameters.AddWithValue("Date", message.Date);
-               
-
-
                 cmd.ExecuteNonQuery();
             }
 
@@ -133,7 +134,8 @@ namespace Infrastructure
 
             var sql = """
             UPDATE Message 
-            SET Text = @Text,
+            SET Number=@Number,
+                Text = @Text,
                 Date = @Date
                
             WHERE Id = @Id
@@ -144,6 +146,7 @@ namespace Infrastructure
                 cmd.Connection = connection;
                 cmd.CommandText = sql;
                 cmd.Parameters.AddWithValue("Id", message.Id);
+                cmd.Parameters.AddWithValue("Number", message.Text);
                 cmd.Parameters.AddWithValue("Text", message.Text);
                 cmd.Parameters.AddWithValue("Date", message.Date);
                 cmd.ExecuteNonQuery();

@@ -1,12 +1,11 @@
 ﻿using Application.Interfaces;
 using AutoMapper;
 using Domain.Entities;
-using System.Reflection;
 
 
 namespace Application.Features.Messages
 {
-    public class MessageService :IMessageService
+    public class MessageService : IMessageService
     {
         private IRepository<Message> _messageRepository;
         private readonly IMapper _mapper;
@@ -21,7 +20,7 @@ namespace Application.Features.Messages
 
         public async Task<IEnumerable<GetedMessage>> GetAll()
         {
-                var messages =await _messageRepository.GetAll();
+            var messages = await _messageRepository.GetAll();
             var getedmessages = _mapper.Map<List<GetedMessage>>(messages);
             return getedmessages;
         }
@@ -57,6 +56,6 @@ namespace Application.Features.Messages
         public async Task Delete(int id)
         {
             await _messageRepository.Delete(id);
-        }       
+        }
     }
 }

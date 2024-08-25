@@ -7,6 +7,6 @@ namespace Application.Features.Messages
     {
         [Required]
         public IFormFile? Text { get; set; }
-
+        public int Number { get; set; }
     }
 }
