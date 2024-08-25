@@ -5,7 +5,7 @@ VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KoshelokTestTaskServer", "KoshelokTestTaskServer\KoshelokTestTaskServer.csproj", "{C0C3CDA0-0929-4C38-A224-1E7051EE094D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "DAL\Application.csproj", "{C7B32068-ED2A-441F-A694-97B11A4456F2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\Application.csproj", "{C7B32068-ED2A-441F-A694-97B11A4456F2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{6F6DC69A-8D49-4630-BC33-6D38151696FB}"
 EndProject

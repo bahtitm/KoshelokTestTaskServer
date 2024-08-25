@@ -6,8 +6,8 @@ namespace Application.Features.Messages
 {
     public class CreateMessageRequest
     {
-        
-        public IFormFile? Text { get; set; }
+        [Required]
+        public byte[] Text { get; set; }
 
 
     }

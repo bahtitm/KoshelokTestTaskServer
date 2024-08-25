@@ -1,5 +1,4 @@
 ﻿using Application.Features.Messages;
-using Application.Features.Users;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KoshelokTestTaskServer.Controllers
@@ -30,26 +29,35 @@ namespace KoshelokTestTaskServer.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromForm]CreateMessageRequest model)
+        public async Task<IActionResult> Create()
         {
-            await _messageService.Create(model);
-            return Ok(new { message = "User created" });
-        }
-        //[HttpPost]
-        //public async Task<IActionResult> Create(IFormFile model)
-        //{
-        //    var t=new CreateMessageRequest();
-        //    t.Text = model;
-        //    await _messageService.Create(t);
-        //    return Ok(new { message = "User created" });
-        //}
+            CreateMessageRequest model = new();
+            try
+            {
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, UpdateMessageRequest model)
-        {
-            await _messageService.Update(id, model);
-            return Ok(new { message = "User updated" });
-        }
+                using (var inputStream = Request.Body)
+                {
+
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        inputStream.CopyTo(memoryStream);
+                        model.Text = memoryStream.ToArray();
+                    }
+
+                }
+
+                await _messageService.Create(model);
+                return Ok(new { message = "User created" });
+
+
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions
+                return StatusCode(500, $"Error processing stream: {ex.Message}");
+            }
+
+        }      
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)

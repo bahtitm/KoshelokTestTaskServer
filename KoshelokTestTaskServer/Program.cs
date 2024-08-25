@@ -4,9 +4,14 @@ using Application.Interfaces;
 using Domain.Entities;
 using Infrastructure;
 using KoshelokTestTaskServer.Middlewares;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.Configure<KestrelServerOptions>(options =>
+{
+    options.AllowSynchronousIO = true;
+});
 
 // Add services to the container.
 builder.Services.AddCors();

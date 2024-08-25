@@ -10,19 +10,19 @@ namespace Application.Features.Messages
         {
 
             CreateMap<CreateMessageRequest, Message>()
-            .BeforeMap((sr, ds) =>
-            {
+            //.BeforeMap((sr, ds) =>
+            //{
 
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    sr.Text.CopyToAsync(ms);
-                    ds.Text = ms.ToArray();
+            //    using (MemoryStream ms = new MemoryStream())
+            //    {
+            //        sr.Text.CopyToAsync(ms);
+            //        ds.Text = ms.ToArray();
 
-                }
+            //    }
 
 
-            })
-            .ForMember(p=>p.Text,p=>p.Ignore())
+            //})
+            //.ForMember(p=>p.Text,p=>p.Ignore())
             ;
 
 
