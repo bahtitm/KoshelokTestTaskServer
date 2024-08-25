@@ -1,6 +1,7 @@
 ﻿using Application.Interfaces;
 using AutoMapper;
 using Domain.Entities;
+using System.Reflection;
 
 
 namespace Application.Features.Messages
@@ -18,19 +19,21 @@ namespace Application.Features.Messages
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<Message>> GetAll()
+        public async Task<IEnumerable<GetedMessage>> GetAll()
         {
-            return await _messageRepository.GetAll();
+                var messages =await _messageRepository.GetAll();
+            var getedmessages = _mapper.Map<List<GetedMessage>>(messages);
+            return getedmessages;
         }
 
-        public async Task<Message> GetById(int id)
+        public async Task<GetedMessage> GetById(int id)
         {
-            var user = await _messageRepository.GetById(id);
-
-            if (user == null)
+            var message = await _messageRepository.GetById(id);
+            if (message == null)
                 throw new KeyNotFoundException("User not found");
+            var getedmessage = _mapper.Map<GetedMessage>(message);
 
-            return user;
+            return getedmessage;
         }
 
         public async Task Create(CreateMessageRequest model)

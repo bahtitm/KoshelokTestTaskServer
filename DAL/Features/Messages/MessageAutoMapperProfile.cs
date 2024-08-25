@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Domain.Entities;
+using System.Collections;
 
 namespace Application.Features.Messages
 {
@@ -8,22 +9,58 @@ namespace Application.Features.Messages
         public MessageAutoMapperProfile()
         {
 
-            CreateMap<CreateMessageRequest, Message>();
+            CreateMap<CreateMessageRequest, Message>()
+            .BeforeMap((sr, ds) =>
+            {
+
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    sr.Text.CopyToAsync(ms);
+                    ds.Text = ms.ToArray();
+
+                }
+
+
+            })
+            .ForMember(p=>p.Text,p=>p.Ignore())
+            ;
 
 
             CreateMap<UpdateMessageRequest, Message>()
-                .ForAllMembers(x => x.Condition(
-                    (src, dest, prop) =>
-                    {
-                        // ignore both null & empty string properties
-                        if (prop == null) return false;
-                        if (prop.GetType() == typeof(string) && string.IsNullOrEmpty((string)prop)) return false;
+                  .BeforeMap((sr, ds) =>
+
+                  {
+
+                      using (MemoryStream ms = new MemoryStream())
+                      {
+                          sr.Text.CopyToAsync(ms);
+                          ds.Text = ms.ToArray();
+
+                      }
 
 
+                  } )
+                  .ForMember(p => p.Text, p => p.Ignore())
+            
+            ;
 
-                        return true;
-                    }
-                ));
+            CreateMap<Message, GetedMessage>()
+                  .BeforeMap((sr, ds) =>
+
+                  {
+                      string result = System.Text.Encoding.UTF8.GetString(sr.Text);
+
+                         
+                          ds.Text = result;
+
+                     
+
+
+                  })
+                  .ForMember(p => p.Text, p => p.Ignore())
+            
+            ;
+
         }
     }
 }

@@ -1,8 +1,12 @@
-﻿namespace Application.Features.Messages
+﻿using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
+
+namespace Application.Features.Messages
 {
     public class UpdateMessageRequest
     {
-        public string? Text { get; set; }
+        [Required]
+        public IFormFile? Text { get; set; }
 
     }
 }

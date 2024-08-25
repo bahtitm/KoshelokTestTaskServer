@@ -69,7 +69,7 @@ namespace Infrastructure
             var sql = """
                 CREATE TABLE IF NOT EXISTS Message (
                     Id SERIAL PRIMARY KEY,
-                    Text VARCHAR,
+                    Text BYTEA,
                     Date DATE
                    
                 );

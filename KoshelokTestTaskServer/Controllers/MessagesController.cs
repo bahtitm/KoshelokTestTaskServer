@@ -30,11 +30,19 @@ namespace KoshelokTestTaskServer.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(CreateMessageRequest model)
+        public async Task<IActionResult> Create([FromForm]CreateMessageRequest model)
         {
             await _messageService.Create(model);
             return Ok(new { message = "User created" });
         }
+        //[HttpPost]
+        //public async Task<IActionResult> Create(IFormFile model)
+        //{
+        //    var t=new CreateMessageRequest();
+        //    t.Text = model;
+        //    await _messageService.Create(t);
+        //    return Ok(new { message = "User created" });
+        //}
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, UpdateMessageRequest model)

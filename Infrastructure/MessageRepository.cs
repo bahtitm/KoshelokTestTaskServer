@@ -26,10 +26,11 @@ namespace Infrastructure
             {
                 while (await reader.ReadAsync())
                 {
+                    byte[] data = (byte[])reader["Text"];
                     users.Add(new Message
                     {
                         Id = reader.GetInt32(0),
-                        Text = reader.GetString(1),
+                        Text = data,
                         
                     });
                 }
@@ -52,10 +53,11 @@ namespace Infrastructure
             using var reader = await command.ExecuteReaderAsync();
             if (await reader.ReadAsync())
             {
+                byte[] data = (byte[])reader["Text"];
                 return new Message
                 {
                     Id = reader.GetInt32(0),
-                    Text = reader.GetString(1),
+                    Text = data,
                    
                 };
             }
@@ -82,10 +84,12 @@ namespace Infrastructure
                 {
                     if (reader.Read())
                     {
+                        byte[] data = (byte[])reader["Text"];
                         return new Message
                         {
                             Id = reader.GetInt32(0),
-                            Text = reader.GetString(1),
+
+                            Text = data,
                           
 
                         };
@@ -110,7 +114,7 @@ namespace Infrastructure
             {
                 cmd.Connection = connection;
                 cmd.CommandText = sql;
-                cmd.Parameters.AddWithValue("Text", message.Text ?? string.Empty);
+                cmd.Parameters.AddWithValue("Text", message.Text);
                 cmd.Parameters.AddWithValue("Date", message.Date);
                
 
@@ -140,7 +144,7 @@ namespace Infrastructure
                 cmd.Connection = connection;
                 cmd.CommandText = sql;
                 cmd.Parameters.AddWithValue("Id", message.Id);
-                cmd.Parameters.AddWithValue("Text", message.Text ?? string.Empty);
+                cmd.Parameters.AddWithValue("Text", message.Text);
                 cmd.Parameters.AddWithValue("Date", message.Date);
                 cmd.ExecuteNonQuery();
             }

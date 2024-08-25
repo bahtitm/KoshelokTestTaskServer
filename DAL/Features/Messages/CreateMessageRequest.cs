@@ -1,12 +1,13 @@
 ﻿using Domain.Entities;
+using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 
 namespace Application.Features.Messages
 {
     public class CreateMessageRequest
     {
-        [Required]
-        public string? Text { get; set; }
+        
+        public IFormFile? Text { get; set; }
 
 
     }
