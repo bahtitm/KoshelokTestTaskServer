@@ -10,10 +10,14 @@ namespace KoshelokTestTaskServer.Controllers
     public class MessagesController : ControllerBase
     {
         private IMessageService _messageService;
+        private readonly IConfiguration configuration;
+        private readonly string websocketUri;
 
-        public MessagesController(IMessageService messageService)
+        public MessagesController(IMessageService messageService, IConfiguration configuration)
         {
             _messageService = messageService;
+            this.configuration = configuration;
+            websocketUri = configuration.GetSection("websocketUri").Value;
         }
 
         [HttpGet]
@@ -67,7 +71,7 @@ namespace KoshelokTestTaskServer.Controllers
                 model.Date = DateTime.Now;
                 text = Encoding.UTF8.GetString(data);
                 await _messageService.Create(model);
-                Uri clientUri = new Uri("wss://localhost:7075/ws");
+                Uri clientUri = new Uri(websocketUri);
                 await webSocketMenager.ConnectAsync(clientUri);
 
                 var modelForSendWebsocket = new { Text = text, Number = number, Date = model.Date };
