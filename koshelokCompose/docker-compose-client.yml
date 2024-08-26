@@ -1,0 +1,28 @@
+
+
+services:
+  koshelokclient:
+    container_name: koshelokclient
+    image: koshelokclient:latest
+    restart: always
+    environment: 
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=FundAdminPanel
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/panelyescapital.pfx    
+      - ASPNETCORE_ENVIRONMENT=Production      
+      - ASPNETCORE_URLS=https://+:7075;   
+      - WAIT_HOSTS=${APP_WAIT_HOSTS}
+      - Organization__Name=koshelokclient
+    ports:
+      - 443:7075
+      
+    networks:
+      - koshelokserver-network
+    volumes:
+      - ./clientSecrets:/root/.microsoft/usersecrets:ro
+      - ./clientcerts:/https:ro      
+
+networks:
+  koshelokserver-network:
+    driver: bridge
+volumes:
+  koshelokclient-data:
