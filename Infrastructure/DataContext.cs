@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Npgsql;
 
 namespace Infrastructure
@@ -7,16 +8,17 @@ namespace Infrastructure
     {
         private DbSettings _dbSettings;
         private NpgsqlDataSource npgsqlDataSource;
+        private readonly ILogger<DataContext> logger;
 
-        public DataContext(IOptions<DbSettings> dbSettings)
+
+        public DataContext(IOptions<DbSettings> dbSettings, ILogger<DataContext> logger)
         {
             _dbSettings = dbSettings.Value;
-
+            this.logger = logger;
             var connectionString = $"Host={_dbSettings.Server}; Database={_dbSettings.Database}; Username={_dbSettings.UserId}; Password={_dbSettings.Password};";
-
+            this.logger.LogDebug(connectionString); ;
             var dataSourceBuilder = new NpgsqlDataSourceBuilder(connectionString);
             npgsqlDataSource = dataSourceBuilder.Build();
-
         }
 
         public async Task<NpgsqlConnection> CreateConnectionAsync()
@@ -34,26 +36,38 @@ namespace Infrastructure
         private async Task _initDatabase()
         {
             var connectionString = $"Host={_dbSettings.Server}; Database=postgres; Username={_dbSettings.UserId}; Password={_dbSettings.Password};";
-            using var conn = new NpgsqlConnection(connectionString);
-            await conn.OpenAsync();
-
-            string checkDBExistsQuery = $"SELECT COUNT(*) FROM pg_database WHERE datname = '{_dbSettings.Database}';";
-
-            string createDBQuery = $"CREATE DATABASE \"{_dbSettings.Database}\"";
-            long tableExists;
-            using (var cmd = new NpgsqlCommand(checkDBExistsQuery, conn))
+            try
             {
 
-                tableExists = (long)cmd.ExecuteScalar();
-            }
-            if (tableExists == 0)
-            {
-                using (var cmd = new NpgsqlCommand(createDBQuery, conn))
+                using var conn = new NpgsqlConnection(connectionString);
+                logger.LogDebug(connectionString);
+                await conn.OpenAsync();
+
+                string checkDBExistsQuery = $"SELECT COUNT(*) FROM pg_database WHERE datname = '{_dbSettings.Database}';";
+
+                string createDBQuery = $"CREATE DATABASE \"{_dbSettings.Database}\"";
+                long tableExists;
+                using (var cmd = new NpgsqlCommand(checkDBExistsQuery, conn))
                 {
-                    cmd.ExecuteNonQuery();
 
+                    tableExists = (long)cmd.ExecuteScalar();
                 }
+                if (tableExists == 0)
+                {
+                    using (var cmd = new NpgsqlCommand(createDBQuery, conn))
+                    {
+                        cmd.ExecuteNonQuery();
+
+                    }
+                }
+
             }
+            catch (Exception)
+            {
+                logger.LogError($"connectionstrin: {connectionString}");
+                //throw;
+            }
+
 
 
         }
