@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KoshelokTestTaskServer", "KoshelokTestTaskServer\KoshelokTestTaskServer.csproj", "{C0C3CDA0-0929-4C38-A224-1E7051EE094D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KoshelokTestTaskServer", "KoshelokTestTaskServer\KoshelokTestTaskServer.csproj", "{C0C3CDA0-0929-4C38-A224-1E7051EE094D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\Application.csproj", "{C7B32068-ED2A-441F-A694-97B11A4456F2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application", "Application\Application.csproj", "{C7B32068-ED2A-441F-A694-97B11A4456F2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{6F6DC69A-8D49-4630-BC33-6D38151696FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{6F6DC69A-8D49-4630-BC33-6D38151696FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{C1CB8FE1-09F3-4040-9B5F-5D6E9A232938}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{C1CB8FE1-09F3-4040-9B5F-5D6E9A232938}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
